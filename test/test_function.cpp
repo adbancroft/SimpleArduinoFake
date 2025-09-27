@@ -3,6 +3,15 @@
 
 using namespace fakeit;
 
+static void test_init(void)
+{
+    When(Method(ArduinoFake(), init)).AlwaysReturn();
+
+    init();
+
+    Verify(Method(ArduinoFake(), init)).Once();
+}
+
 static void test_timestamps(void)
 {
     When(Method(ArduinoFake(), micros)).AlwaysReturn(100000);
@@ -196,6 +205,7 @@ namespace FunctionTest
 {
     void run_tests(void)
     {
+        RUN_TEST(test_init);
         RUN_TEST(test_timestamps);
         RUN_TEST(test_pin_mode);
         RUN_TEST(test_digital_pin);
