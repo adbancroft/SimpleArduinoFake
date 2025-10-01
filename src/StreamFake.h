@@ -18,13 +18,13 @@ struct StreamFake : public PrintFake
     virtual void setTimeout(unsigned long timeout) = 0;
     virtual unsigned long getTimeout(void) = 0;
 
-    virtual bool find(char *target) = 0;
+    virtual bool find(const char *target) = 0;
 
-    virtual bool find(char *target, size_t length) = 0;
+    virtual bool find(const char *target, size_t length) = 0;
 
-    virtual bool findUntil(char *target, char *terminator) = 0;
+    virtual bool findUntil(const char *target, const char *terminator) = 0;
 
-    virtual bool findUntil(char *target, size_t targetLen, char *terminate, size_t termLen) = 0;
+    virtual bool findUntil(const char *target, size_t targetLen, const char *terminate, size_t termLen) = 0;
 
     virtual long parseInt(LookaheadMode lookahead = SKIP_ALL, char ignore = NO_IGNORE_CHAR) = 0;
 
