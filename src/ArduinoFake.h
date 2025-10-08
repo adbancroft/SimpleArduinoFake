@@ -34,7 +34,7 @@
     new mock##FakeProxy(ArduinoFakeInstance(mock))
 
 #define _ArduinoFakeGetMock(mock) \
-    getArduinoFakeContext()->Mocks->mock
+    getArduinoFakeContext()->Mocks.mock
 
 #define _ArduinoFakeGetFunction() _ArduinoFakeGetMock(Function)
 #define _ArduinoFakeGetSerial() _ArduinoFakeGetMock(Serial)
@@ -50,7 +50,7 @@
     mock##Fake* mock() \
     { \
         if (!this->Instances->mock){ \
-            this->Instances->mock = &this->Mocks->mock.get(); \
+            this->Instances->mock = &this->Mocks.mock.get(); \
         } \
         return this->Instances->mock; \
     }
@@ -95,7 +95,7 @@ class ArduinoFakeContext
 {
     public:
         ArduinoFakeInstances* Instances = new ArduinoFakeInstances();
-        ArduinoFakeMocks* Mocks = new ArduinoFakeMocks();
+        ArduinoFakeMocks Mocks;
         std::unordered_map<void*, void*> Mapping;
 
         _ArduinoFakeInstanceGetter1(Print)
@@ -127,14 +127,14 @@ class ArduinoFakeContext
             }
             this->Instances = new ArduinoFakeInstances();
 
-            this->Mocks->Function.Reset();
-            this->Mocks->Stream.Reset();
-            this->Mocks->Serial.Reset();
-            this->Mocks->Wire.Reset();
-            this->Mocks->Client.Reset();
-            this->Mocks->Print.Reset();
-            this->Mocks->SPI.Reset();
-            this->Mocks->EEPROM.Reset();
+            this->Mocks.Function.Reset();
+            this->Mocks.Stream.Reset();
+            this->Mocks.Serial.Reset();
+            this->Mocks.Wire.Reset();
+            this->Mocks.Client.Reset();
+            this->Mocks.Print.Reset();
+            this->Mocks.SPI.Reset();
+            this->Mocks.EEPROM.Reset();
 
             Mapping[&::Serial] = this->Serial();
             Mapping[&::Wire] = this->Wire();
