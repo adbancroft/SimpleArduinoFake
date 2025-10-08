@@ -34,7 +34,7 @@
     new mock##FakeProxy(ArduinoFakeInstance(mock))
 
 #define _ArduinoFakeGetMock(mock) \
-    getArduinoFakeContext()->Mocks.mock
+    getArduinoFakeContext()->_##mock.Fake
 
 #define _ArduinoFakeGetFunction() _ArduinoFakeGetMock(Function)
 #define _ArduinoFakeGetSerial() _ArduinoFakeGetMock(Serial)
@@ -49,10 +49,10 @@
 #define _ArduinoFakeInstanceGetter1(mock) \
     mock##Fake* mock() \
     { \
-        if (!this->Instances.mock){ \
-            this->Instances.mock = &this->Mocks.mock.get(); \
+        if (!this->_##mock.Instance){ \
+            this->_##mock.Instance = &this->_##mock.Fake.get(); \
         } \
-        return this->Instances.mock; \
+        return this->_##mock.Instance; \
     }
 
 #define _ArduinoFakeInstanceGetter2(name, clazz) \
@@ -67,64 +67,31 @@
         throw std::runtime_error("Unknown instance"); \
     }
 
-struct ArduinoFakeMocks
+template <class FakeT>
+struct ArduinoFake_t
 {
-    fakeit::Mock<FunctionFake> Function;
-    fakeit::Mock<SerialFake> Serial;
-    fakeit::Mock<WireFake> Wire;
-    fakeit::Mock<StreamFake> Stream;
-    fakeit::Mock<ClientFake> Client;
-    fakeit::Mock<PrintFake> Print;
-    fakeit::Mock<SPIFake> SPI;
-    fakeit::Mock<EEPROMFake> EEPROM;
+    fakeit::Mock<FakeT> Fake;
+    FakeT *Instance;
 
     void reset(void)
     {
-        Function.Reset();
-        Stream.Reset();
-        Serial.Reset();
-        Wire.Reset();
-        Client.Reset();
-        Print.Reset();
-        SPI.Reset();
-        EEPROM.Reset();
-    }
-};
-
-struct ArduinoFakeInstances
-{
-    FunctionFake* Function;
-    SerialFake* Serial;
-    WireFake* Wire;
-    StreamFake* Stream;
-    ClientFake* Client;
-    PrintFake* Print;
-    SPIFake* SPI;
-    EEPROMFake* EEPROM;
-
-    ArduinoFakeInstances()
-    {
-        reset();
-    }
-
-    void reset(void)
-    {
-        Function = nullptr;
-        Serial = nullptr;
-        Wire = nullptr;
-        Stream = nullptr;
-        Client = nullptr;
-        Print = nullptr;
-        SPI = nullptr;
-        EEPROM = nullptr;
+        Fake.Reset();
+        Instance = nullptr;
     }
 };
 
 class ArduinoFakeContext
 {
     public:
-        ArduinoFakeInstances Instances;
-        ArduinoFakeMocks Mocks;
+        ArduinoFake_t<FunctionFake> _Function;
+        ArduinoFake_t<SerialFake> _Serial;
+        ArduinoFake_t<WireFake> _Wire;
+        ArduinoFake_t<StreamFake> _Stream;
+        ArduinoFake_t<ClientFake> _Client;
+        ArduinoFake_t<PrintFake> _Print;
+        ArduinoFake_t<SPIFake> _SPI;
+        ArduinoFake_t<EEPROMFake> _EEPROM;
+        
         std::unordered_map<void*, void*> Mapping;
 
         _ArduinoFakeInstanceGetter1(Print)
@@ -151,8 +118,14 @@ class ArduinoFakeContext
 
         void reset(void)
         {
-            this->Instances.reset();
-            this->Mocks.reset();
+            _Function.reset();
+            _Serial.reset();
+            _Wire.reset();
+            _Stream.reset();
+            _Client.reset();
+            _Print.reset();
+            _SPI.reset();
+            _EEPROM.reset();
 
             Mapping.clear();
             Mapping[&::Serial] = this->Serial();
