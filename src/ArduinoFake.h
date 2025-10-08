@@ -77,6 +77,18 @@ struct ArduinoFakeMocks
     fakeit::Mock<PrintFake> Print;
     fakeit::Mock<SPIFake> SPI;
     fakeit::Mock<EEPROMFake> EEPROM;
+
+    void reset(void)
+    {
+        Function.Reset();
+        Stream.Reset();
+        Serial.Reset();
+        Wire.Reset();
+        Client.Reset();
+        Print.Reset();
+        SPI.Reset();
+        EEPROM.Reset();
+    }
 };
 
 struct ArduinoFakeInstances
@@ -127,14 +139,7 @@ class ArduinoFakeContext
             }
             this->Instances = new ArduinoFakeInstances();
 
-            this->Mocks.Function.Reset();
-            this->Mocks.Stream.Reset();
-            this->Mocks.Serial.Reset();
-            this->Mocks.Wire.Reset();
-            this->Mocks.Client.Reset();
-            this->Mocks.Print.Reset();
-            this->Mocks.SPI.Reset();
-            this->Mocks.EEPROM.Reset();
+            this->Mocks.reset();
 
             Mapping.clear();
             Mapping[&::Serial] = this->Serial();
