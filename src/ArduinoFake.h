@@ -49,10 +49,10 @@
 #define _ArduinoFakeInstanceGetter1(mock) \
     mock##Fake* mock() \
     { \
-        if (!this->Instances->mock){ \
-            this->Instances->mock = &this->Mocks.mock.get(); \
+        if (!this->Instances.mock){ \
+            this->Instances.mock = &this->Mocks.mock.get(); \
         } \
-        return this->Instances->mock; \
+        return this->Instances.mock; \
     }
 
 #define _ArduinoFakeInstanceGetter2(name, clazz) \
@@ -101,12 +101,29 @@ struct ArduinoFakeInstances
     PrintFake* Print;
     SPIFake* SPI;
     EEPROMFake* EEPROM;
+
+    ArduinoFakeInstances()
+    {
+        reset();
+    }
+
+    void reset(void)
+    {
+        Function = nullptr;
+        Serial = nullptr;
+        Wire = nullptr;
+        Stream = nullptr;
+        Client = nullptr;
+        Print = nullptr;
+        SPI = nullptr;
+        EEPROM = nullptr;
+    }
 };
 
 class ArduinoFakeContext
 {
     public:
-        ArduinoFakeInstances* Instances = new ArduinoFakeInstances();
+        ArduinoFakeInstances Instances;
         ArduinoFakeMocks Mocks;
         std::unordered_map<void*, void*> Mapping;
 
@@ -134,11 +151,7 @@ class ArduinoFakeContext
 
         void reset(void)
         {
-            if (this->Instances) {
-                delete this->Instances;
-            }
-            this->Instances = new ArduinoFakeInstances();
-
+            this->Instances.reset();
             this->Mocks.reset();
 
             Mapping.clear();
