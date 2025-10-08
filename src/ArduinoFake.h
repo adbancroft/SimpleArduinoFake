@@ -22,8 +22,6 @@
 #include "SPI.h"
 #include "EEPROM.h"
 
-#define ArduinoFake(mock) _ArduinoFakeGet##mock()
-
 #define ArduinoFakeReset() \
     getArduinoFakeContext()->reset()
 
@@ -45,6 +43,8 @@
 #define _ArduinoFakeGetClient() _ArduinoFakeGetMock(Client)
 #define _ArduinoFakeGetPrint() _ArduinoFakeGetMock(Print)
 #define _ArduinoFakeGet() _ArduinoFakeGetMock(Function)
+
+#define ArduinoFake(mock) _ArduinoFakeGet##mock()
 
 template <class FakeT>
 struct ArduinoFake_t
