@@ -49,10 +49,7 @@
 #define _ArduinoFakeInstanceGetter1(mock) \
     mock##Fake* mock() \
     { \
-        if (!this->_##mock.Instance){ \
-            this->_##mock.Instance = &this->_##mock.Fake.get(); \
-        } \
-        return this->_##mock.Instance; \
+        return this->_##mock.getFake(); \
     }
 
 #define _ArduinoFakeInstanceGetter2(name, clazz) \
@@ -61,22 +58,38 @@
         if (Mapping[instance]) { \
             return (name##Fake*) Mapping[instance]; \
         } \
-        if (dynamic_cast<name##FakeProxy*>(instance)) { \
-            return dynamic_cast<name##FakeProxy*>(instance)->get##name##Fake(); \
-        } \
-        throw std::runtime_error("Unknown instance"); \
+        return this->_##name.getFake(instance); \
     }
 
 template <class FakeT>
 struct ArduinoFake_t
 {
     fakeit::Mock<FakeT> Fake;
-    FakeT *Instance;
 
     void reset(void)
     {
         Fake.Reset();
-        Instance = nullptr;
+    }
+
+    FakeT* getFake(void)
+    {
+        return &Fake.get();
+    }
+};
+
+template <class FakeT, class ProxyT, typename BaseT = ArduinoFake_t<FakeT>>
+struct ProxiedArduinoFake_t : public BaseT
+{
+    // Pull in base class getFake()
+    using BaseT::getFake;
+    
+    template <class ArduinoT>
+    FakeT* getFake(ArduinoT *instance)
+    {
+        if (dynamic_cast<ProxyT*>(instance)) {
+            return dynamic_cast<ProxyT*>(instance)->getFake();
+        }
+        throw std::runtime_error("Unknown instance");
     }
 };
 
@@ -84,13 +97,13 @@ class ArduinoFakeContext
 {
     public:
         ArduinoFake_t<FunctionFake> _Function;
-        ArduinoFake_t<SerialFake> _Serial;
-        ArduinoFake_t<WireFake> _Wire;
-        ArduinoFake_t<StreamFake> _Stream;
-        ArduinoFake_t<ClientFake> _Client;
-        ArduinoFake_t<PrintFake> _Print;
-        ArduinoFake_t<SPIFake> _SPI;
-        ArduinoFake_t<EEPROMFake> _EEPROM;
+        ProxiedArduinoFake_t<SerialFake, SerialFakeProxy> _Serial;
+        ProxiedArduinoFake_t<WireFake, WireFakeProxy> _Wire;
+        ProxiedArduinoFake_t<StreamFake, StreamFakeProxy> _Stream;
+        ProxiedArduinoFake_t<ClientFake, ClientFakeProxy> _Client;
+        ProxiedArduinoFake_t<PrintFake, PrintFakeProxy> _Print;
+        ProxiedArduinoFake_t<SPIFake, SPIFakeProxy> _SPI;
+        ProxiedArduinoFake_t<EEPROMFake, EEPROMFakeProxy> _EEPROM;
         
         std::unordered_map<void*, void*> Mapping;
 

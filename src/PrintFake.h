@@ -55,7 +55,7 @@ class PrintFakeProxy : public Print
             return printFake->write(value);
         }
 
-        PrintFake* getPrintFake()
+        PrintFake* getFake()
         {
             return printFake;
         }

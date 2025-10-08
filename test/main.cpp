@@ -17,6 +17,7 @@ using namespace fakeit;
 #include "test_arduino_string.h"
 #include "test_include.h"
 #include "test_ArduinoFake_t.h"
+#include "test_ProxiedArduinoFake_t.h"
 
 #ifdef UNIT_TEST
 
@@ -47,6 +48,7 @@ int main(int argc, char **argv)
     RUN_TEST_GROUP(ClientTest);
     RUN_TEST_GROUP(IncludeTest);
     RUN_TEST_GROUP(ArduinoFakeTTest);
+    RUN_TEST_GROUP(ProxiedArduinoFakeTTest);
 
     return UNITY_END();
 }

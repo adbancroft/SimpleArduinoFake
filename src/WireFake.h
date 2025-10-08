@@ -37,5 +37,5 @@ private:
 public:
   WireFakeProxy(WireFake *fake) : StreamFakeProxy(fake) { wireFake = fake; }
 
-  WireFake *getWireFake() { return wireFake; }
+  WireFake *getFake() { return wireFake; }
 };

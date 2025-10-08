@@ -43,7 +43,7 @@ class SerialFakeProxy : public StreamFakeProxy, public Serial_
             serialFake = fake;
         }
 
-        SerialFake* getSerialFake()
+        SerialFake* getFake()
         {
             return serialFake;
         }
