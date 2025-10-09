@@ -23,7 +23,7 @@
 #include "EEPROM.h"
 
 #define ArduinoFakeReset() \
-    getArduinoFakeContext()->reset()
+    getArduinoFakeContext()->Reset()
 
 #define ArduinoFakeInstance(mock, ...) \
     getArduinoFakeContext()->mock(__VA_ARGS__)
@@ -51,7 +51,7 @@ struct ArduinoFake_t
 {
     fakeit::Mock<FakeT> Fake;
 
-    void reset(void)
+    void Reset(void)
     {
         Fake.Reset();
     }
@@ -81,7 +81,7 @@ struct ProxiedArduinoFake_t : public BaseT
 class FakeOverride_t
 {
 public:
-    void reset(void)
+    void Reset(void)
     {
         _mapping.clear();
     }
@@ -183,21 +183,21 @@ public:
         , _SPI(_fakeOverrides)
         , _EEPROM(_fakeOverrides)
     {
-        this->reset();
+        this->Reset();
     }
 
-    void reset(void)
+    void Reset(void)
     {
-        _Function.reset();
-        _Serial.reset();
-        _Wire.reset();
-        _Stream.reset();
-        _Client.reset();
-        _Print.reset();
-        _SPI.reset();
-        _EEPROM.reset();
+        _Function.Reset();
+        _Serial.Reset();
+        _Wire.Reset();
+        _Stream.Reset();
+        _Client.Reset();
+        _Print.Reset();
+        _SPI.Reset();
+        _EEPROM.Reset();
 
-        _fakeOverrides.reset();
+        _fakeOverrides.Reset();
         _fakeOverrides.setOverride(&::Serial, &_Serial);
         _fakeOverrides.setOverride(&::Wire, &_Wire);
         _fakeOverrides.setOverride(&::SPI, &_SPI);

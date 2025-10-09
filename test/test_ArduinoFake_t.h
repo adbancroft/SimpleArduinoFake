@@ -22,7 +22,7 @@ namespace ArduinoFakeTTest
         Verify(method).Once();
 
         // Reset
-        arduinoFake.reset();
+        arduinoFake.Reset();
         
         try {
             // This should throw an exception...
