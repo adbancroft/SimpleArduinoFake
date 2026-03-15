@@ -102,6 +102,9 @@ static void test_reset_eeprom(void)
 
 static void test_reset(void)
 {
+#if defined(__MINGW64__)
+    TEST_IGNORE_MESSAGE("Crashes under Mingw64");
+#else
     RUN_TEST(test_reset_function);
     RUN_TEST(test_reset_serial);
     RUN_TEST(test_reset_wire);
@@ -110,6 +113,7 @@ static void test_reset(void)
     RUN_TEST(test_reset_print);
     RUN_TEST(test_reset_spi);
     RUN_TEST(test_reset_eeprom);
+#endif
 }
 
 static void test_function_mock(void)
