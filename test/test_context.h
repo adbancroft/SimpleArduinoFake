@@ -13,16 +13,102 @@ namespace ArduinoContextTest
         TEST_ASSERT_EQUAL(context1, context2);
     }
 
+    template <typename FakeMethod>
+    void assert_test_reset(FakeMethod fakeMethod, std::function<void(void)> realMethod)
+    {
+        Verify(fakeMethod).Never();
+
+        // Call the "real" method...
+        realMethod();
+        // ...which should call the faked method
+        Verify(fakeMethod).Once();
+
+        // Reset all fakes
+        ArduinoFakeReset();
+        
+        try {
+            // This should throw an exception...
+            realMethod(); 
+            // ...fail the test if not.
+            TEST_FAIL();
+        }
+        catch (fakeit::FakeitException &e) {
+            Verify(fakeMethod).Never();
+        }
+    }
+
+    void test_reset_function(void)
+    {
+        auto method = Method(ArduinoFake(Function), millis);
+        When(method).AlwaysReturn(101L);
+        assert_test_reset(method, []() { (void)millis(); });
+    }
+
+    void test_reset_print(void)
+    {
+        auto method = OverloadedMethod(ArduinoFake(Print), print, size_t(const char[]));
+        When(method).AlwaysDo([](const char *str) {
+            std::cout << str;
+            return strlen(str);
+        });
+        assert_test_reset(method, []() { (ArduinoFakeMock(Print))->print("abc"); });
+    }
+
+    void test_reset_serial(void)
+    {
+        auto method = Method(ArduinoFake(Serial), end);
+        When(method).AlwaysReturn();
+        assert_test_reset(method, []() { (ArduinoFakeMock(Serial))->end(); });
+    }
+
+    void test_reset_wire(void)
+    {
+        auto method = Method(ArduinoFake(Wire), end);
+        When(method).AlwaysReturn();
+        assert_test_reset(method, []() { (ArduinoFakeMock(Wire))->end(); });
+    }
+
+    void test_reset_stream(void)
+    {
+        auto method = OverloadedMethod(ArduinoFake(Stream), find, bool(char *));
+        When(method).AlwaysReturn(false);
+        assert_test_reset(method, []() { 
+            char toFind[] = "abc";
+            (ArduinoFakeMock(Stream))->find(toFind); 
+        });
+    }
+
+    void test_reset_client(void)
+    {
+        auto method = Method(ArduinoFake(Client), available);
+        When(method).AlwaysReturn();
+        assert_test_reset(method, []() { (ArduinoFakeMock(Client))->available(); });
+    }
+
+    void test_reset_spi(void)
+    {
+        auto method = Method(ArduinoFake(SPI), end);
+        When(method).AlwaysReturn();
+        assert_test_reset(method, []() { (ArduinoFakeMock(SPI))->end(); });
+    }
+
+    void test_reset_eeprom(void)
+    {
+        auto method = Method(ArduinoFake(EEPROM), length);
+        When(method).AlwaysReturn(0xffff);
+        assert_test_reset(method, []() { (ArduinoFakeMock(EEPROM))->length(); });
+    }
+
     void test_reset(void)
     {
-#if false // TODO: fix test failure
-        ArduinoFakeContext* context = getArduinoFakeContext();
-        ArduinoFakeInstances* instances = context->Instances;
-
-        ArduinoFakeReset();
-
-        TEST_ASSERT_NOT_EQUAL(context->Instances, instances);
-#endif
+        RUN_TEST(test_reset_function);
+        RUN_TEST(test_reset_serial);
+        RUN_TEST(test_reset_wire);
+        RUN_TEST(test_reset_stream);
+        RUN_TEST(test_reset_client);
+        RUN_TEST(test_reset_print);
+        RUN_TEST(test_reset_spi);
+        RUN_TEST(test_reset_eeprom);
     }
 
     void test_function_mock(void)
@@ -127,7 +213,6 @@ namespace ArduinoContextTest
     void run_tests(void)
     {
         RUN_TEST(ArduinoContextTest::test_single_instance);
-        RUN_TEST(ArduinoContextTest::test_reset);
         RUN_TEST(ArduinoContextTest::test_function_mock);
         RUN_TEST(ArduinoContextTest::test_print_mock);
         RUN_TEST(ArduinoContextTest::test_stream_mock);
@@ -135,6 +220,8 @@ namespace ArduinoContextTest
         RUN_TEST(ArduinoContextTest::test_getter_overload_with_proxy);
         RUN_TEST(ArduinoContextTest::test_getter_overload_with_mapping);
         RUN_TEST(ArduinoContextTest::test_unknown_instance_exception);
+
+        ArduinoContextTest::test_reset();
     }
 }
 

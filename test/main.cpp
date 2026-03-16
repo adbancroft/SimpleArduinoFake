@@ -16,6 +16,8 @@ using namespace fakeit;
 #include "test_client.h"
 #include "test_arduino_string.h"
 #include "test_include.h"
+#include "test_ProxiedArduinoFake_t.h"
+#include "test_OverrideableProxiedArduinoFake_t.h"
 
 #ifdef UNIT_TEST
 
@@ -28,6 +30,7 @@ void setUp(void)
 {
     ArduinoFakeReset();
 }
+void tearDown(void) {}
 
 int main(int argc, char **argv)
 {
@@ -45,6 +48,8 @@ int main(int argc, char **argv)
     RUN_TEST_GROUP(EEPROMTest);
     RUN_TEST_GROUP(ClientTest);
     RUN_TEST_GROUP(IncludeTest);
+    RUN_TEST_GROUP(ProxiedArduinoFakeTTest);
+    RUN_TEST_GROUP(OverrideableProxiedArduinoFakeTTest);
 
     return UNITY_END();
 }

@@ -17,5 +17,5 @@ private:
 public:
   EEPROMFakeProxy(EEPROMFake *fake) { eepromFake = fake; }
 
-  EEPROMFake *getEEPROMFake() { return eepromFake; }
+  EEPROMFake *getFake() { return eepromFake; }
 };

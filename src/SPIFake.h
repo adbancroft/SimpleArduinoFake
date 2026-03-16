@@ -22,5 +22,5 @@ class SPIFakeProxy : public SPIClass {
  public:
   SPIFakeProxy(SPIFake *fake) { spiFake = fake; }
 
-  SPIFake *getSPIFake() { return spiFake; }
+  SPIFake *getFake() { return spiFake; }
 };

@@ -74,7 +74,7 @@ class StreamFakeProxy : public Stream, public PrintFakeProxy
             streamFake->flush();
         }
 
-        StreamFake* getStreamFake()
+        StreamFake* getFake()
         {
             return streamFake;
         }

@@ -97,7 +97,7 @@ class ClientFakeProxy : public StreamFakeProxy, public Client
 
         virtual operator bool();
 
-        ClientFake* getClientFake()
+        ClientFake* getFake()
         {
             return clientFake;
         }

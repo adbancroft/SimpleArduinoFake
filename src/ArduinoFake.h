@@ -22,10 +22,8 @@
 #include "SPI.h"
 #include "EEPROM.h"
 
-#define ArduinoFake(mock) _ArduinoFakeGet##mock()
-
 #define ArduinoFakeReset() \
-    getArduinoFakeContext()->reset()
+    getArduinoFakeContext()->Reset()
 
 #define ArduinoFakeInstance(mock, ...) \
     getArduinoFakeContext()->mock(__VA_ARGS__)
@@ -34,7 +32,7 @@
     new mock##FakeProxy(ArduinoFakeInstance(mock))
 
 #define _ArduinoFakeGetMock(mock) \
-    getArduinoFakeContext()->Mocks->mock
+    getArduinoFakeContext()->_##mock
 
 #define _ArduinoFakeGetFunction() _ArduinoFakeGetMock(Function)
 #define _ArduinoFakeGetSerial() _ArduinoFakeGetMock(Serial)
@@ -46,101 +44,144 @@
 #define _ArduinoFakeGetPrint() _ArduinoFakeGetMock(Print)
 #define _ArduinoFakeGet() _ArduinoFakeGetMock(Function)
 
-#define _ArduinoFakeInstanceGetter1(mock) \
-    mock##Fake* mock() \
-    { \
-        if (!this->Instances->mock){ \
-            this->Instances->mock = &this->Mocks->mock.get(); \
-        } \
-        return this->Instances->mock; \
-    }
+#define ArduinoFake(mock) _ArduinoFakeGet##mock()
 
-#define _ArduinoFakeInstanceGetter2(name, clazz) \
-    name##Fake* name(class clazz* instance) \
-    { \
-        if (Mapping[instance]) { \
-            return (name##Fake*) Mapping[instance]; \
-        } \
-        if (dynamic_cast<name##FakeProxy*>(instance)) { \
-            return dynamic_cast<name##FakeProxy*>(instance)->get##name##Fake(); \
-        } \
-        throw std::runtime_error("Unknown instance"); \
+template <class FakeT, class ProxyT, typename BaseT = fakeit::Mock<FakeT>>
+struct ProxiedArduinoFake_t : public BaseT
+{  
+    template <class ArduinoT>
+    FakeT* getFake(ArduinoT *instance)
+    {
+        if (dynamic_cast<ProxyT*>(instance)) {
+            return dynamic_cast<ProxyT*>(instance)->getFake();
+        }
+        throw std::runtime_error("Unknown instance");
     }
-
-struct ArduinoFakeMocks
-{
-    fakeit::Mock<FunctionFake> Function;
-    fakeit::Mock<SerialFake> Serial;
-    fakeit::Mock<WireFake> Wire;
-    fakeit::Mock<StreamFake> Stream;
-    fakeit::Mock<ClientFake> Client;
-    fakeit::Mock<PrintFake> Print;
-    fakeit::Mock<SPIFake> SPI;
-    fakeit::Mock<EEPROMFake> EEPROM;
 };
 
-struct ArduinoFakeInstances
+class FakeOverride_t
 {
-    FunctionFake* Function;
-    SerialFake* Serial;
-    WireFake* Wire;
-    StreamFake* Stream;
-    ClientFake* Client;
-    PrintFake* Print;
-    SPIFake* SPI;
-    EEPROMFake* EEPROM;
+public:
+    void Reset(void)
+    {
+        _mapping.clear();
+    }
+
+    void *getOverride(void *instance)
+    {
+        auto iter = _mapping.find(instance);
+        return iter==_mapping.end() ? nullptr : iter->second;
+    }
+
+    void setOverride(void *instance, void *override)
+    {
+        _mapping[instance] = override;
+    }
+
+private:
+    std::unordered_map<void*, void*> _mapping;
+};
+
+template <class FakeT, class ProxyT, typename BaseT = ProxiedArduinoFake_t<FakeT, ProxyT>>
+struct OverrideableProxiedArduinoFake_t : public BaseT
+{
+    FakeOverride_t &_overrides;
+
+    OverrideableProxiedArduinoFake_t(FakeOverride_t &overrides)
+        : BaseT()
+        , _overrides(overrides)
+    {
+    }
+   
+    template <class ArduinoT>
+    FakeT* getFake(ArduinoT *instance)
+    {
+        fakeit::Mock<FakeT> *pOverride = static_cast<fakeit::Mock<FakeT> *>(_overrides.getOverride(instance));
+        if (pOverride!=nullptr) {
+            return &pOverride->get();
+        }
+        return BaseT::getFake(instance);
+    }
 };
 
 class ArduinoFakeContext
 {
-    public:
-        ArduinoFakeInstances* Instances = new ArduinoFakeInstances();
-        ArduinoFakeMocks* Mocks = new ArduinoFakeMocks();
-        std::unordered_map<void*, void*> Mapping;
+public:
+    FakeOverride_t _fakeOverrides;
+    fakeit::Mock<FunctionFake> _Function;
+    OverrideableProxiedArduinoFake_t<SerialFake, SerialFakeProxy> _Serial;
+    OverrideableProxiedArduinoFake_t<WireFake, WireFakeProxy> _Wire;
+    OverrideableProxiedArduinoFake_t<StreamFake, StreamFakeProxy> _Stream;
+    OverrideableProxiedArduinoFake_t<ClientFake, ClientFakeProxy> _Client;
+    OverrideableProxiedArduinoFake_t<PrintFake, PrintFakeProxy> _Print;
+    OverrideableProxiedArduinoFake_t<SPIFake, SPIFakeProxy> _SPI;
+    OverrideableProxiedArduinoFake_t<EEPROMFake, EEPROMFakeProxy> _EEPROM;
+    
+#define _ArduinoFakeInstanceGetter1(mock) \
+    mock##Fake* mock() \
+    { \
+        return &this->_##mock.get(); \
+    }
 
-        _ArduinoFakeInstanceGetter1(Print)
-        _ArduinoFakeInstanceGetter1(Stream)
-        _ArduinoFakeInstanceGetter1(Serial)
-        _ArduinoFakeInstanceGetter1(Wire)
-        _ArduinoFakeInstanceGetter1(Client)
-        _ArduinoFakeInstanceGetter1(Function)
-        _ArduinoFakeInstanceGetter1(SPI)
-        _ArduinoFakeInstanceGetter1(EEPROM)
+    _ArduinoFakeInstanceGetter1(Print)
+    _ArduinoFakeInstanceGetter1(Stream)
+    _ArduinoFakeInstanceGetter1(Serial)
+    _ArduinoFakeInstanceGetter1(Wire)
+    _ArduinoFakeInstanceGetter1(Client)
+    _ArduinoFakeInstanceGetter1(Function)
+    _ArduinoFakeInstanceGetter1(SPI)
+    _ArduinoFakeInstanceGetter1(EEPROM)
 
-        _ArduinoFakeInstanceGetter2(Print, Print)
-        _ArduinoFakeInstanceGetter2(Client, Client)
-        _ArduinoFakeInstanceGetter2(Stream, Stream)
-        _ArduinoFakeInstanceGetter2(Serial, Serial_)
-        _ArduinoFakeInstanceGetter2(Wire, TwoWire)
-        _ArduinoFakeInstanceGetter2(SPI, SPIClass)
-        _ArduinoFakeInstanceGetter2(EEPROM, EEPROMClass)
+#undef _ArduinoFakeInstanceGetter1
 
-        ArduinoFakeContext()
-        {
-            this->reset();
-        }
+#define _ArduinoFakeInstanceGetter2(name, clazz) \
+    name##Fake* name(class clazz* instance) \
+    { \
+        return this->_##name.getFake(instance); \
+    }
 
-        void reset(void)
-        {
-            if (this->Instances) {
-                delete this->Instances;
-            }
-            this->Instances = new ArduinoFakeInstances();
+    _ArduinoFakeInstanceGetter2(Print, Print)
+    _ArduinoFakeInstanceGetter2(Client, Client)
+    _ArduinoFakeInstanceGetter2(Stream, Stream)
+    _ArduinoFakeInstanceGetter2(Serial, Serial_)
+    _ArduinoFakeInstanceGetter2(Wire, TwoWire)
+    _ArduinoFakeInstanceGetter2(SPI, SPIClass)
+    _ArduinoFakeInstanceGetter2(EEPROM, EEPROMClass)
 
-            this->Mocks->Function.Reset();
-            this->Mocks->Stream.Reset();
-            this->Mocks->Serial.Reset();
-            this->Mocks->Wire.Reset();
-            this->Mocks->Client.Reset();
-            this->Mocks->Print.Reset();
-            this->Mocks->SPI.Reset();
-            this->Mocks->EEPROM.Reset();
+#undef _ArduinoFakeInstanceGetter2
 
-            Mapping[&::Serial] = this->Serial();
-            Mapping[&::Wire] = this->Wire();
-            Mapping[&::SPI] = this->SPI();
-            Mapping[&::EEPROM] = this->EEPROM();
-        }
+    ArduinoFakeContext()
+        : _fakeOverrides()
+        , _Function()
+        , _Serial(_fakeOverrides)
+        , _Wire(_fakeOverrides)
+        , _Stream(_fakeOverrides)
+        , _Client(_fakeOverrides)
+        , _Print(_fakeOverrides)
+        , _SPI(_fakeOverrides)
+        , _EEPROM(_fakeOverrides)
+    {
+        this->Reset();
+    }
+
+    void Reset(void)
+    {
+        _Function.Reset();
+        _Serial.Reset();
+        _Wire.Reset();
+        _Stream.Reset();
+        _Client.Reset();
+        _Print.Reset();
+        _SPI.Reset();
+        _EEPROM.Reset();
+
+        _fakeOverrides.Reset();
+        _fakeOverrides.setOverride(&::Serial, &_Serial);
+        _fakeOverrides.setOverride(&::Wire, &_Wire);
+        _fakeOverrides.setOverride(&::SPI, &_SPI);
+        _fakeOverrides.setOverride(&::EEPROM, &_EEPROM);
+    }
+
 };
 
 ArduinoFakeContext* getArduinoFakeContext();
