@@ -117,8 +117,8 @@ static void test_stream_find(void)
 
 static void test_stream_parse(void)
 {
-    When(Method(ArduinoFake(Stream), parseInt)).Return(10, 11);
-    When(Method(ArduinoFake(Stream), parseFloat)).Return(2.0, 2.1);
+    When(OverloadedMethod(ArduinoFake(Stream), parseInt, long(LookaheadMode, char))).Return(10, 11);
+    When(OverloadedMethod(ArduinoFake(Stream), parseFloat, float(LookaheadMode, char))).Return(2.0, 2.1);
 
     Stream* stream = ArduinoFakeMock(Stream);
 
@@ -128,8 +128,8 @@ static void test_stream_parse(void)
     TEST_ASSERT_FLOAT_WITHIN(0, 2.0, stream->parseFloat());
     TEST_ASSERT_FLOAT_WITHIN(0, 2.1, stream->parseFloat());
 
-    Verify(Method(ArduinoFake(Stream), parseInt)).Exactly(2_Times);
-    Verify(Method(ArduinoFake(Stream), parseFloat)).Exactly(2_Times);
+    Verify(OverloadedMethod(ArduinoFake(Stream), parseInt, long(LookaheadMode, char))).Exactly(2_Times);
+    Verify(OverloadedMethod(ArduinoFake(Stream), parseFloat, float(LookaheadMode, char))).Exactly(2_Times);
 }
 
 static void test_stream_read(void)
@@ -143,8 +143,8 @@ static void test_stream_read(void)
     char* char_ptr1 = &char_val1;
     char* char_ptr2 = &char_val2;
 
-    When(Method(ArduinoFake(Stream), readBytes)).Return(1, 2);
-    When(Method(ArduinoFake(Stream), readBytesUntil)).Return(3, 4);
+    When(OverloadedMethod(ArduinoFake(Stream), readBytes, size_t(char *, size_t))).Return(1, 2);
+    When(OverloadedMethod(ArduinoFake(Stream), readBytesUntil, size_t(char, char*, size_t))).Return(3, 4);
     When(Method(ArduinoFake(Stream), readString)).Return(str1, str2);
     When(Method(ArduinoFake(Stream), readStringUntil)).Return(str1, str2);
 
@@ -162,14 +162,14 @@ static void test_stream_read(void)
     TEST_ASSERT_TRUE(str1.equals(stream->readStringUntil(terminator)));
     TEST_ASSERT_TRUE(str2.equals(stream->readStringUntil(terminator)));
 
-    Verify(Method(ArduinoFake(Stream), readBytes).Using(char_ptr1, 10)).Once();
-    Verify(Method(ArduinoFake(Stream), readBytes).Using(char_ptr2, 20)).Once();
+    Verify(OverloadedMethod(ArduinoFake(Stream), readBytes, size_t(char *, size_t)).Using(char_ptr1, 10)).Once();
+    Verify(OverloadedMethod(ArduinoFake(Stream), readBytes, size_t(char *, size_t)).Using(char_ptr2, 20)).Once();
 
-    Verify(Method(ArduinoFake(Stream), readBytesUntil).Using(terminator, char_ptr1, 10)).Once();
-    Verify(Method(ArduinoFake(Stream), readBytesUntil).Using(terminator, char_ptr2, 20)).Once();
+    Verify(OverloadedMethod(ArduinoFake(Stream), readBytesUntil, size_t(char, char*, size_t)).Using(terminator, char_ptr1, 10)).Once();
+    Verify(OverloadedMethod(ArduinoFake(Stream), readBytesUntil, size_t(char, char*, size_t)).Using(terminator, char_ptr2, 20)).Once();
 
     Verify(Method(ArduinoFake(Stream), readString)).Exactly(2_Times);
-    Verify(Method(ArduinoFake(Stream), readBytesUntil)).Exactly(2_Times);
+    Verify(OverloadedMethod(ArduinoFake(Stream), readBytesUntil, size_t(char, char*, size_t))).Exactly(2_Times);
 }
 
 namespace StreamTest
