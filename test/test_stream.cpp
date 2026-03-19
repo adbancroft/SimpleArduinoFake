@@ -23,8 +23,8 @@ static void test_extends_print(void)
     When(OverloadedMethod(ArduinoFake(Print), print, size_t(char))).AlwaysReturn();
     When(OverloadedMethod(ArduinoFake(Print), print, size_t(int, int))).AlwaysReturn();
 
-    Stream* stream = ArduinoFakeMock(Stream);
-    Print* print = ArduinoFakeMock(Print);
+    std::shared_ptr<Stream> stream(ArduinoFakeMock(Stream));
+    std::shared_ptr<Print> print(ArduinoFakeMock(Print));
 
     stream->print(stream_char_var);
     stream->print(stream_int_var, DEC);
@@ -48,7 +48,7 @@ static void test_stream_basics(void)
     When(Method(ArduinoFake(Stream), setTimeout)).AlwaysReturn();
     When(Method(ArduinoFake(Stream), getTimeout)).AlwaysReturn(11);
 
-    Stream* stream = ArduinoFakeMock(Stream);
+    std::shared_ptr<Stream> stream(ArduinoFakeMock(Stream));
 
     TEST_ASSERT_EQUAL(0, stream->available());
     TEST_ASSERT_EQUAL(1, stream->available());
@@ -91,7 +91,7 @@ static void test_stream_find(void)
     When(OverloadedMethod(ArduinoFake(Stream), findUntil, bool(const char*, const char*))).Return(true, false);
     When(OverloadedMethod(ArduinoFake(Stream), findUntil, bool(const char*, size_t, const char*, size_t))).Return(true, false);
 
-    Stream* stream = ArduinoFakeMock(Stream);
+    std::shared_ptr<Stream> stream(ArduinoFakeMock(Stream));
 
     TEST_ASSERT_EQUAL(true, stream->find(char_ptr1));
     TEST_ASSERT_EQUAL(false, stream->find(char_ptr2));
@@ -120,7 +120,7 @@ static void test_stream_parse(void)
     When(OverloadedMethod(ArduinoFake(Stream), parseInt, long(LookaheadMode, char))).Return(10, 11);
     When(OverloadedMethod(ArduinoFake(Stream), parseFloat, float(LookaheadMode, char))).Return(2.0, 2.1);
 
-    Stream* stream = ArduinoFakeMock(Stream);
+    std::shared_ptr<Stream> stream(ArduinoFakeMock(Stream));
 
     TEST_ASSERT_INT_WITHIN(0, 10, stream->parseInt());
     TEST_ASSERT_INT_WITHIN(0, 11, stream->parseInt());
@@ -148,7 +148,7 @@ static void test_stream_read(void)
     When(Method(ArduinoFake(Stream), readString)).Return(str1, str2);
     When(Method(ArduinoFake(Stream), readStringUntil)).Return(str1, str2);
 
-    Stream* stream = ArduinoFakeMock(Stream);
+    std::shared_ptr<Stream> stream(ArduinoFakeMock(Stream));
 
     TEST_ASSERT_EQUAL_INT(1, stream->readBytes(char_ptr1, 10));
     TEST_ASSERT_EQUAL_INT(2, stream->readBytes(char_ptr2, 20));

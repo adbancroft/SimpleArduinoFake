@@ -202,8 +202,8 @@ static void test_unknown_instance_exception(void)
 
 static void test_getter_overload_with_proxy(void)
 {
-    Serial_* serial = ArduinoFakeMock(Serial);
-    PrintFake* serialPrintFake = ArduinoFakeInstance(serial);
+    std::shared_ptr<Serial_> serial(ArduinoFakeMock(Serial));
+    PrintFake* serialPrintFake = ArduinoFakeInstance(serial.get());
 
     TEST_ASSERT_EQUAL(getArduinoFakeContext()->Serial(), serialPrintFake);
     PrintFake* printFake = ArduinoFakeInstance0(Print);

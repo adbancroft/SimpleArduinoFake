@@ -23,8 +23,8 @@ static void test_extends_stream(void)
     When(OverloadedMethod(ArduinoFake(Serial), print, size_t(char))).AlwaysReturn();
     When(OverloadedMethod(ArduinoFake(Serial), print, size_t(int, int))).AlwaysReturn();
 
-    Stream* stream = ArduinoFakeMock(Stream);
-    Serial_* serial = ArduinoFakeMock(Serial);
+    std::shared_ptr<Stream> stream(ArduinoFakeMock(Stream));
+    std::shared_ptr<Serial_> serial(ArduinoFakeMock(Serial));
 
     stream->print(stream_char_var);
     stream->print(stream_int_var, DEC);

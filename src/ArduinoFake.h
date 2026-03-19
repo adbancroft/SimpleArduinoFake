@@ -46,7 +46,7 @@
     getArduinoFakeContext()->getFake(clazz)
 
 #define ArduinoFakeMock(mock) \
-    new mock##FakeProxy(ArduinoFakeInstance0(mock))
+    std::shared_ptr<mock##FakeProxy>(new mock##FakeProxy(ArduinoFakeInstance0(mock)))
 
 #define _ArduinoFakeGetMock(mock) \
     getArduinoFakeContext()->_##mock

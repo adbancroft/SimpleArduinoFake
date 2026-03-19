@@ -22,8 +22,8 @@ static void test_extends_stream(void) {
   When(OverloadedMethod(ArduinoFake(Wire), print, size_t(int, int)))
       .AlwaysReturn();
 
-  Stream *stream = ArduinoFakeMock(Stream);
-  TwoWire *wire = ArduinoFakeMock(Wire);
+  std::shared_ptr<Stream> stream(ArduinoFakeMock(Stream));
+  std::shared_ptr<TwoWire> wire(ArduinoFakeMock(Wire));
 
   stream->print(stream_char_var);
   stream->print(stream_int_var, DEC);
