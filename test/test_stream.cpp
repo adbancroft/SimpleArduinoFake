@@ -7,8 +7,8 @@ using namespace fakeit;
 static void test_extends_print(void)
 {
     TEST_ASSERT_NOT_EQUAL(
-        ArduinoFakeInstance(Stream),
-        ArduinoFakeInstance(Print)
+        ArduinoFakeInstance0(Stream),
+        ArduinoFakeInstance0(Print)
     );
 
     char print_char_var = 'A';

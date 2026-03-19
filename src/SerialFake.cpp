@@ -83,6 +83,6 @@ int32_t Serial_::readBreak()
     return ArduinoFakeInstance(Serial, this)->readBreak();
 }
 
-Serial_ Serial = SerialFakeProxy(ArduinoFakeInstance(Serial));
+Serial_ Serial = SerialFakeProxy(ArduinoFakeInstance0(Serial));
 
 #endif // USBCON

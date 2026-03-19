@@ -22,14 +22,31 @@
 #include "SPI.h"
 #include "EEPROM.h"
 
+#define CONCAT2(x,y) x##y
+#define CONCAT(x,y) CONCAT2(x,y)
+
+// These map a Arduino class name (E.g. "SPIClass") to
+// the corresponding fake member name (E.g. "SPI")
+#define _ClazzToFakePrint() Print
+#define _ClazzToFakeClient() Client
+#define _ClazzToFakeStream() Stream
+#define _ClazzToFakeSerial_() Serial
+#define _ClazzToFakeTwoWire() Wire
+#define _ClazzToFakeSPIClass() SPI
+#define _ClazzToFakeEEPROMClass() EEPROM
+#define _ClazzToFake(clazz) _ClazzToFake##clazz()
+
 #define ArduinoFakeReset() \
     getArduinoFakeContext()->Reset()
 
-#define ArduinoFakeInstance(mock, ...) \
-    getArduinoFakeContext()->mock(__VA_ARGS__)
+ #define ArduinoFakeInstance0(mock) \
+    getArduinoFakeContext()->mock()
+
+#define ArduinoFakeInstance(mock, clazz) \
+    getArduinoFakeContext()->getFake(clazz)
 
 #define ArduinoFakeMock(mock) \
-    new mock##FakeProxy(ArduinoFakeInstance(mock))
+    new mock##FakeProxy(ArduinoFakeInstance0(mock))
 
 #define _ArduinoFakeGetMock(mock) \
     getArduinoFakeContext()->_##mock
@@ -134,19 +151,19 @@ public:
 
 #undef _ArduinoFakeInstanceGetter1
 
-#define _ArduinoFakeInstanceGetter2(name, clazz) \
-    name##Fake* name(class clazz* instance) \
+#define _ArduinoFakeInstanceGetter2(clazz) \
+    CONCAT(_ClazzToFake(clazz), Fake)* getFake(class clazz* instance) \
     { \
-        return this->_##name.getFake(instance); \
+        return this->CONCAT(_, _ClazzToFake(clazz)).getFake(instance); \
     }
 
-    _ArduinoFakeInstanceGetter2(Print, Print)
-    _ArduinoFakeInstanceGetter2(Client, Client)
-    _ArduinoFakeInstanceGetter2(Stream, Stream)
-    _ArduinoFakeInstanceGetter2(Serial, Serial_)
-    _ArduinoFakeInstanceGetter2(Wire, TwoWire)
-    _ArduinoFakeInstanceGetter2(SPI, SPIClass)
-    _ArduinoFakeInstanceGetter2(EEPROM, EEPROMClass)
+    _ArduinoFakeInstanceGetter2(Print)
+    _ArduinoFakeInstanceGetter2(Client)
+    _ArduinoFakeInstanceGetter2(Stream)
+    _ArduinoFakeInstanceGetter2(Serial_)
+    _ArduinoFakeInstanceGetter2(TwoWire)
+    _ArduinoFakeInstanceGetter2(SPIClass)
+    _ArduinoFakeInstanceGetter2(EEPROMClass)
 
 #undef _ArduinoFakeInstanceGetter2
 

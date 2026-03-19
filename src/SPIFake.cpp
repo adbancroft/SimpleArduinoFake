@@ -25,4 +25,4 @@ void SPIClass::transfer(void *buf, size_t count) {
   return ArduinoFakeInstance(SPI, this)->transfer(buf, count);
 };
 
-SPIClass SPI = SPIFakeProxy(ArduinoFakeInstance(SPI));
+SPIClass SPI = SPIFakeProxy(ArduinoFakeInstance0(SPI));

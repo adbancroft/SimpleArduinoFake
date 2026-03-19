@@ -90,4 +90,4 @@ void TwoWire::onRequest(void (*function)(void)) {
   ArduinoFakeInstance(Wire, this)->onRequest(function);
 }
 
-TwoWire Wire = WireFakeProxy(ArduinoFakeInstance(Wire));
+TwoWire Wire = WireFakeProxy(ArduinoFakeInstance0(Wire));
