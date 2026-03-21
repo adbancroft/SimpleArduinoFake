@@ -76,7 +76,7 @@ static void test_reset_stream(void)
     When(method).AlwaysReturn(false);
     assert_test_reset(method, []() { 
         char toFind[] = "abc";
-        (ArduinoFakeMock(Stream))->find(toFind); 
+        (ArduinoFakeInstance0(Stream))->find(toFind); 
     });
 }
 

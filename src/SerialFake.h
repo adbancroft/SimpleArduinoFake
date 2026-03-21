@@ -30,21 +30,20 @@ struct SerialFake : public StreamFake
     virtual bool rts() = 0;
 };
 
-class SerialFakeProxy : public StreamFakeProxy, public Serial_
+class SerialFakeProxy : public StreamFakeProxy<StreamFake>, public Serial_
 {
-    private:
-        SerialFake* serialFake;
+private:
+    SerialFake* serialFake;
+public:
+    SerialFakeProxy(SerialFake* fake) : StreamFakeProxy<StreamFake>(fake)
+    {
+        serialFake = fake;
+    }
 
-    public:
-        SerialFakeProxy(SerialFake* fake) : StreamFakeProxy(fake)
-        {
-            serialFake = fake;
-        }
-
-        SerialFake* getFake()
-        {
-            return serialFake;
-        }
-};
+    SerialFake* getFake()
+    {
+        return serialFake;
+    }
+    };
 
 #endif // USBCON

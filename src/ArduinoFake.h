@@ -154,7 +154,7 @@ public:
     fakeit::Mock<FunctionFake> _Function;
     OverrideableProxiedArduinoFake_t<SerialFake, SerialFakeProxy> _Serial;
     OverrideableProxiedArduinoFake_t<WireFake, WireFakeProxy> _Wire;
-    OverrideableProxiedArduinoFake_t<StreamFake, StreamFakeProxy> _Stream;
+    OverrideableProxiedArduinoFake_t<StreamFake, StreamFakeProxy<StreamFake>> _Stream;
     OverrideableProxiedArduinoFake_t<ClientFake, ClientFakeProxy> _Client;
     OverrideableProxiedArduinoFake_t<PrintFake, PrintFakeProxy<PrintFake>> _Print;
     OverrideableProxiedArduinoFake_t<SPIFake, SPIFakeProxy> _SPI;

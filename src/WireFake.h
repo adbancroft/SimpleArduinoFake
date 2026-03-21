@@ -30,12 +30,12 @@ struct WireFake : public StreamFake {
   virtual void onRequest(void (*)(void)) = 0;
 };
 
-class WireFakeProxy : public StreamFakeProxy, public TwoWire {
+class WireFakeProxy : public StreamFakeProxy<Stream>, public TwoWire {
 private:
   WireFake *wireFake;
 
 public:
-  WireFakeProxy(WireFake *fake) : StreamFakeProxy(fake) { wireFake = fake; }
+  WireFakeProxy(WireFake *fake) : StreamFakeProxy<Stream>(fake) { wireFake = fake; }
 
   WireFake *getFake() { return wireFake; }
 };

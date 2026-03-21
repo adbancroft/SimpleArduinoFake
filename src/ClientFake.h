@@ -28,13 +28,13 @@ struct ClientFake : public StreamFake
     virtual uint8_t connected() = 0;
 };
 
-class ClientFakeProxy : public StreamFakeProxy, public Client
+class ClientFakeProxy : public StreamFakeProxy<Stream>, public Client
 {
     private:
         ClientFake* clientFake;
 
     public:
-        ClientFakeProxy(ClientFake* fake) : StreamFakeProxy(fake)
+        ClientFakeProxy(ClientFake* fake) : StreamFakeProxy<Stream>(fake)
         {
             clientFake = fake;
         }
