@@ -53,7 +53,7 @@ static void test_reset_print(void)
         std::cout << str;
         return strlen(str);
     });
-    assert_test_reset(method, []() { (ArduinoFakeMock(Print))->print("abc"); });
+    assert_test_reset(method, []() { (ArduinoFakeInstance0(Print))->print("abc"); });
 }
 
 static void test_reset_serial(void)

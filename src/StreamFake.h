@@ -37,13 +37,13 @@ struct StreamFake : public PrintFake
     virtual String readStringUntil(char terminator) = 0;
 };
 
-class StreamFakeProxy : public Stream, public PrintFakeProxy
+class StreamFakeProxy : public Stream, public PrintFakeProxy<Print>
 {
     private:
         StreamFake* streamFake;
 
     public:
-        StreamFakeProxy(StreamFake* fake) : PrintFakeProxy(fake)
+        StreamFakeProxy(StreamFake* fake) : PrintFakeProxy<Print>(fake)
         {
             streamFake = fake;
         }

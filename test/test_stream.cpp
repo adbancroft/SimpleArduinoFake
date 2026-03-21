@@ -24,7 +24,7 @@ static void test_extends_print(void)
     When(OverloadedMethod(ArduinoFake(Print), print, size_t(int, int))).AlwaysReturn();
 
     std::shared_ptr<Stream> stream(ArduinoFakeMock(Stream));
-    std::shared_ptr<Print> print(ArduinoFakeMock(Print));
+    Print* print(ArduinoFakeInstance0(Print));
 
     stream->print(stream_char_var);
     stream->print(stream_int_var, DEC);

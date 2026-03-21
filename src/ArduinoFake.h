@@ -62,6 +62,8 @@
 #define _ArduinoFakeGet() _ArduinoFakeGetMock(Function)
 
 #define ArduinoFake(mock) _ArduinoFakeGet##mock()
+#define ArduinoFakeMock2(mock) \
+    &ArduinoFake(mock).get()
 
 // Access fakeit::Mock<T>.get()
 // There is no equivalent in fakeit since Mock is a template 
@@ -83,7 +85,7 @@ struct ProxiedArduinoFake_t : public BaseT, IFake
         if (dynamic_cast<ProxyT*>(instance)) {
             return dynamic_cast<ProxyT*>(instance)->getFake();
         }
-        throw std::runtime_error("Unknown instance");
+        return static_cast<FakeT*>(toFake());
     }
 
     // Get the 'real' fake - the one that is actually mocked.
@@ -154,7 +156,7 @@ public:
     OverrideableProxiedArduinoFake_t<WireFake, WireFakeProxy> _Wire;
     OverrideableProxiedArduinoFake_t<StreamFake, StreamFakeProxy> _Stream;
     OverrideableProxiedArduinoFake_t<ClientFake, ClientFakeProxy> _Client;
-    OverrideableProxiedArduinoFake_t<PrintFake, PrintFakeProxy> _Print;
+    OverrideableProxiedArduinoFake_t<PrintFake, PrintFakeProxy<PrintFake>> _Print;
     OverrideableProxiedArduinoFake_t<SPIFake, SPIFakeProxy> _SPI;
     OverrideableProxiedArduinoFake_t<EEPROMFake, EEPROMFakeProxy> _EEPROM;
     
