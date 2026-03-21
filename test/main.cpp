@@ -41,7 +41,7 @@ int main(int argc, char **argv)
     RUN_TEST_GROUP(WireTest);
     RUN_TEST_GROUP(SpiTest);
     RUN_TEST_GROUP(EEPROMTest);
-    // RUN_TEST_GROUP(ClientTest);
+    RUN_TEST_GROUP(ClientTest);
     RUN_TEST_GROUP(ProxiedArduinoFakeTTest);
     RUN_TEST_GROUP(OverrideableProxiedArduinoFakeTTest);
 

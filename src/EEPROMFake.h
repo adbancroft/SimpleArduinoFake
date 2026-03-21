@@ -1,20 +1,11 @@
 #pragma once
 
 #include "arduino/EEPROM.h"
+#include "ProxyBase.h"
 
-struct EEPROMFake {
-  virtual uint8_t read(int idx) = 0;
-  virtual void write(int idx, uint8_t val) = 0;
-  virtual void update(int idx, uint8_t val) = 0;
-  virtual uint16_t length() = 0;
-};
+using EEPROMFake = EEPROMClass;
 
-class EEPROMFakeProxy : public EEPROMClass {
-private:
-  EEPROMFake *eepromFake;
-
+class EEPROMFakeProxy : public ProxyBase<EEPROMFake> {
 public:
-  EEPROMFakeProxy(EEPROMFake *fake) { eepromFake = fake; }
-
-  EEPROMFake *getFake() { return eepromFake; }
+  EEPROMFakeProxy(EEPROMFake *fake) : ProxyBase<EEPROMFake>(fake) { }
 };
