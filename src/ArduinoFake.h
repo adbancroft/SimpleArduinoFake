@@ -25,14 +25,6 @@
 
 #include "FunctionFake.h"
 
-using PrintFake = Print;
-using ClientFake = Client;
-using StreamFake = Stream;
-using SerialFake = Serial_;
-using WireFake = TwoWire;
-using SPIFake = SPIClass;
-using EEPROMFake = EEPROMClass;
-
 #define ArduinoFakeReset() \
     getArduinoFakeContext()->Reset()
 
@@ -85,7 +77,6 @@ struct ArduinoFake_t : public BaseT, IFake
 };
 
 // Maps from global instances to the equivalent IFake.
-// E.g. Serial => SerialFake
 //
 // Required to respect inherited classes.
 // E.g. Stream has 2 derived classes, Serial_ & TwoWire. Each has a global instance, Serial & Wire.

@@ -141,15 +141,15 @@ static void test_function_mock(void)
 
 static void test_print_mock(void)
 {
-    Mock<PrintFake>* m1 = &ArduinoFake(Print);
-    Mock<PrintFake>* m2 = &ArduinoFake(Print);
+    Mock<Print>* m1 = &ArduinoFake(Print);
+    Mock<Print>* m2 = &ArduinoFake(Print);
 
     TEST_ASSERT_NOT_NULL(m1);
     TEST_ASSERT_NOT_NULL(m2);
     TEST_ASSERT_EQUAL(m1, m2);
 
-    PrintFake* i1 = ArduinoFakeInstance0(Print);
-    PrintFake* i2 = ArduinoFakeInstance0(Print);
+    Print* i1 = ArduinoFakeInstance0(Print);
+    Print* i2 = ArduinoFakeInstance0(Print);
 
     TEST_ASSERT_NOT_NULL(i1);
     TEST_ASSERT_NOT_NULL(i2);
@@ -158,15 +158,15 @@ static void test_print_mock(void)
 
 static void test_stream_mock(void)
 {
-    Mock<StreamFake>* m1 = &ArduinoFake(Stream);
-    Mock<StreamFake>* m2 = &ArduinoFake(Stream);
+    Mock<Stream>* m1 = &ArduinoFake(Stream);
+    Mock<Stream>* m2 = &ArduinoFake(Stream);
 
     TEST_ASSERT_NOT_NULL(m1);
     TEST_ASSERT_NOT_NULL(m2);
     TEST_ASSERT_EQUAL(m1, m2);
 
-    StreamFake* i1 = ArduinoFakeInstance0(Stream);
-    StreamFake* i2 = ArduinoFakeInstance0(Stream);
+    Stream* i1 = ArduinoFakeInstance0(Stream);
+    Stream* i2 = ArduinoFakeInstance0(Stream);
 
     TEST_ASSERT_NOT_NULL(i1);
     TEST_ASSERT_NOT_NULL(i2);
@@ -175,15 +175,15 @@ static void test_stream_mock(void)
 
 static void test_serial_mock(void)
 {
-    Mock<SerialFake>* m1 = &ArduinoFake(Serial);
-    Mock<SerialFake>* m2 = &ArduinoFake(Serial);
+    Mock<Serial_>* m1 = &ArduinoFake(Serial);
+    Mock<Serial_>* m2 = &ArduinoFake(Serial);
 
     TEST_ASSERT_NOT_NULL(m1);
     TEST_ASSERT_NOT_NULL(m2);
     TEST_ASSERT_EQUAL(m1, m2);
 
-    SerialFake* i1 = ArduinoFakeInstance0(Serial);
-    SerialFake* i2 = ArduinoFakeInstance0(Serial);
+    Serial_* i1 = ArduinoFakeInstance0(Serial);
+    Serial_* i2 = ArduinoFakeInstance0(Serial);
 
     TEST_ASSERT_NOT_NULL(i1);
     TEST_ASSERT_NOT_NULL(i2);
@@ -204,20 +204,20 @@ static void test_unknown_instance_exception(void)
 static void test_getter_overload_with_proxy(void)
 {
     Serial_* serial(ArduinoFakeInstance0(Serial));
-    PrintFake* serialPrintFake = ArduinoFakeInstance(serial);
+    Print* serialPrintFake = ArduinoFakeInstance(serial);
 
     TEST_ASSERT_EQUAL(getArduinoFakeContext()->Serial(), serialPrintFake);
-    PrintFake* printFake = ArduinoFakeInstance0(Print);
+    Print* printFake = ArduinoFakeInstance0(Print);
     TEST_ASSERT_NOT_EQUAL(printFake, serialPrintFake);
 }
 
 static void test_getter_overload_with_mapping(void)
 {
     Serial_* serial = &::Serial;
-    PrintFake* serialPrintFake = ArduinoFakeInstance(serial);
+    Print* serialPrintFake = ArduinoFakeInstance(serial);
 
     TEST_ASSERT_EQUAL(getArduinoFakeContext()->Serial(), serialPrintFake);
-    PrintFake* printFake = ArduinoFakeInstance0(Print);
+    Print* printFake = ArduinoFakeInstance0(Print);
     TEST_ASSERT_NOT_EQUAL(printFake, serialPrintFake);
 }
 
