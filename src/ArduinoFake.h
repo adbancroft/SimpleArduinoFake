@@ -1,8 +1,8 @@
 #pragma once
 // clang-format off
 
-#if !defined(UBRRH) && !defined(UBRR0H) && !defined(USBCON)
-    #define USBCON
+#if !defined(USBCON)
+    #error Add "-D USBCON" to the compiler command line
 #endif
 
 #include <unordered_map>
@@ -62,17 +62,16 @@ struct IFake
 template <class FakeT, typename BaseT = fakeit::Mock<FakeT>>
 struct ArduinoFake_t : public BaseT, IFake
 {
-    // Proxy to fake
-    template <class ArduinoT>
-    FakeT* getFake(ArduinoT *instance)
-    {
-        return static_cast<FakeT*>(toFake());
-    }
-
-    // Get the 'real' fake - the one that is actually mocked.
-    virtual void* toFake(void) override
+    // Typed access to the mocked object
+    FakeT* getFake(void)
     {
         return &fakeit::Mock<FakeT>::get();
+    }
+
+    // Untyped access to the mocked object
+    virtual void* toFake(void) override
+    {
+        return getFake();
     }
 };
 
@@ -123,8 +122,10 @@ struct OverrideableArduinoFake_t : public BaseT
         if (pOverride!=nullptr) {
             return (FakeT*)pOverride->toFake();
         }
-        return BaseT::getFake(instance);
+        return getFake();
     }
+
+    using BaseT::getFake;
 };
 
 class ArduinoFakeContext
@@ -140,14 +141,14 @@ public:
     OverrideableArduinoFake_t<SPIClass> _SPI;
     OverrideableArduinoFake_t<EEPROMClass> _EEPROM;
     
-    ::Print* Print(void) { return (::Print*)_Print.toFake(); }
-    ::Stream* Stream(void) { return (::Stream*)_Stream.toFake(); }
-    Serial_* Serial(void) { return (Serial_*)_Serial.toFake(); }
-    TwoWire* Wire(void) { return (TwoWire*)_Wire.toFake(); }
-    ::Client* Client(void) { return (::Client*)_Client.toFake(); }
-    FunctionFake* Function(void) { return (FunctionFake*)_Function.toFake(); }
-    SPIClass* SPI(void) { return (SPIClass*)_SPI.toFake(); }
-    EEPROMClass* EEPROM(void) { return (EEPROMClass*)_EEPROM.toFake(); }
+    ::Print* Print(void) { return _Print.getFake(); }
+    ::Stream* Stream(void) { return _Stream.getFake(); }
+    Serial_* Serial(void) { return _Serial.getFake(); }
+    TwoWire* Wire(void) { return _Wire.getFake(); }
+    ::Client* Client(void) { return _Client.getFake(); }
+    FunctionFake* Function(void) { return _Function.getFake(); }
+    SPIClass* SPI(void) { return _SPI.getFake(); }
+    EEPROMClass* EEPROM(void) { return _EEPROM.getFake(); }
 
     ::Print* getFake(::Print *instance) { return _Print.getFake(instance); }
     ::Stream* getFake(::Stream *instance) { return _Stream.getFake(instance); }
