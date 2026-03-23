@@ -17,15 +17,15 @@ struct IArduino
 
 static void test_getFake(void)
 {
-    FakeOverride_t overrides;
-    OverrideableArduinoFake_t<IDummy> subject(overrides);
+    ArduinoFake::details::FakeOverride_t overrides;
+    ArduinoFake::details::OverrideableArduinoFake_t<IDummy> subject(overrides);
 
     // No override, should get the real fake
     IArduino proxy;
     TEST_ASSERT_EQUAL_PTR(&subject.get(), subject.getFake<IArduino>(&proxy));
 
     // Should return the alternate, since it's now overriden
-    ArduinoFake_t<IArduino> alternateFake;
+    ArduinoFake::details::ArduinoFake_t<IArduino> alternateFake;
     overrides.setOverride(&proxy, &alternateFake);
     TEST_ASSERT_EQUAL_PTR(&alternateFake.get(), subject.getFake<IArduino>(&proxy));
 }

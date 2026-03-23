@@ -2,6 +2,10 @@
 
 #include <cstdint>
 
+namespace ArduinoFake {
+
+namespace details {
+    
 struct FunctionFake
 {
     virtual void init(void) = 0;
@@ -50,3 +54,7 @@ struct FunctionFake
     virtual volatile uint8_t * portInputRegister(uint8_t pin) = 0;
     virtual volatile uint8_t * portModeRegister(uint8_t pin) = 0;
 };
+
+}
+
+}
