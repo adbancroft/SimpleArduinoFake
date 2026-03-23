@@ -29,7 +29,7 @@
     getArduinoFakeContext()->Reset()
 
  #define ArduinoFakeInstance0(mock) \
-    getArduinoFakeContext()->mock()
+    getArduinoFakeContext()->_##mock.getFake()
 
 #define ArduinoFakeInstance(clazz) \
     getArduinoFakeContext()->getFake(clazz)
@@ -141,15 +141,6 @@ public:
     OverrideableArduinoFake_t<SPIClass> _SPI;
     OverrideableArduinoFake_t<EEPROMClass> _EEPROM;
     
-    ::Print* Print(void) { return _Print.getFake(); }
-    ::Stream* Stream(void) { return _Stream.getFake(); }
-    Serial_* Serial(void) { return _Serial.getFake(); }
-    TwoWire* Wire(void) { return _Wire.getFake(); }
-    ::Client* Client(void) { return _Client.getFake(); }
-    FunctionFake* Function(void) { return _Function.getFake(); }
-    SPIClass* SPI(void) { return _SPI.getFake(); }
-    EEPROMClass* EEPROM(void) { return _EEPROM.getFake(); }
-
     ::Print* getFake(::Print *instance) { return _Print.getFake(instance); }
     ::Stream* getFake(::Stream *instance) { return _Stream.getFake(instance); }
     ::Serial_* getFake(::Serial_ *instance) { return _Serial.getFake(instance); }

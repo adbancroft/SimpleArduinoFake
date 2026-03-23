@@ -206,7 +206,7 @@ static void test_getter_overload_with_proxy(void)
     Serial_* serial(ArduinoFakeInstance0(Serial));
     Print* serialPrintFake = ArduinoFakeInstance(serial);
 
-    TEST_ASSERT_EQUAL(getArduinoFakeContext()->Serial(), serialPrintFake);
+    TEST_ASSERT_EQUAL(ArduinoFakeInstance0(Serial), serialPrintFake);
     Print* printFake = ArduinoFakeInstance0(Print);
     TEST_ASSERT_NOT_EQUAL(printFake, serialPrintFake);
 }
@@ -216,7 +216,7 @@ static void test_getter_overload_with_mapping(void)
     Serial_* serial = &::Serial;
     Print* serialPrintFake = ArduinoFakeInstance(serial);
 
-    TEST_ASSERT_EQUAL(getArduinoFakeContext()->Serial(), serialPrintFake);
+    TEST_ASSERT_EQUAL(ArduinoFakeInstance0(Serial), serialPrintFake);
     Print* printFake = ArduinoFakeInstance0(Print);
     TEST_ASSERT_NOT_EQUAL(printFake, serialPrintFake);
 }
