@@ -1,5 +1,4 @@
 #include "ArduinoFake.h"
-#include "WireFake.h"
 
 void TwoWire::begin(void) { ArduinoFakeInstance(this)->begin(); }
 

@@ -1,5 +1,4 @@
 #include "ArduinoFake.h"
-#include "SPIFake.h"
 
 void SPIClass::begin() { ArduinoFakeInstance(this)->begin(); };
 

@@ -1,5 +1,4 @@
 #include "ArduinoFake.h"
-#include "SerialFake.h"
 
 #if defined(USBCON)
 

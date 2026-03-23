@@ -1,6 +1,5 @@
 // clang-format off
 #include "ArduinoFake.h"
-#include "EEPROMFake.h"
 // clang-format on
 
 uint8_t EEPROMClass::read(int idx) {

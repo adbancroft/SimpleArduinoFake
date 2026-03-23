@@ -1,5 +1,4 @@
 #include "ArduinoFake.h"
-#include "ClientFake.h"
 #include <stdexcept>
 
 int Client::connect(IPAddress ip, uint16_t port)
