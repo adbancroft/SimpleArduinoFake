@@ -120,9 +120,9 @@ static void test_reset(void)
 
 static void test_function_mock(void)
 {
-    Mock<FunctionFake>* m1 = &ArduinoFake(Function);
-    Mock<FunctionFake>* m2 = &ArduinoFake(Function);
-    Mock<FunctionFake>* m3 = &ArduinoFake();
+    Mock<ArduinoFake::details::FunctionFake>* m1 = &ArduinoFake(Function);
+    Mock<ArduinoFake::details::FunctionFake>* m2 = &ArduinoFake(Function);
+    Mock<ArduinoFake::details::FunctionFake>* m3 = &ArduinoFake();
 
     TEST_ASSERT_NOT_NULL(m1);
     TEST_ASSERT_NOT_NULL(m2);
@@ -131,8 +131,8 @@ static void test_function_mock(void)
     TEST_ASSERT_EQUAL(m1, m2);
     TEST_ASSERT_EQUAL(m1, m3);
 
-    FunctionFake* i1 = ArduinoFakeInstance(Function);
-    FunctionFake* i2 = ArduinoFakeInstance(Function);
+    ArduinoFake::details::FunctionFake* i1 = ArduinoFakeInstance(Function);
+    ArduinoFake::details::FunctionFake* i2 = ArduinoFakeInstance(Function);
 
     TEST_ASSERT_NOT_NULL(i1);
     TEST_ASSERT_NOT_NULL(i2);
