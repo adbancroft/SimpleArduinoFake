@@ -3,60 +3,60 @@
 
 int Client::connect(IPAddress ip, uint16_t port)
 {
-    return getArduinoFakeContext()._Client.getFake(this)->connect(ip, port);
+    return ArduinoFake::getContext()._Client.getFake(this)->connect(ip, port);
 }
 
 int Client::connect(const char *host, uint16_t port)
 {
-    return getArduinoFakeContext()._Client.getFake(this)->connect(host, port);
+    return ArduinoFake::getContext()._Client.getFake(this)->connect(host, port);
 }
 
 size_t Client::write(uint8_t value)
 {
-    return getArduinoFakeContext()._Client.getFake(this)->write(value);
+    return ArduinoFake::getContext()._Client.getFake(this)->write(value);
 }
 
 size_t Client::write(const uint8_t *buf, size_t size)
 {
-    return getArduinoFakeContext()._Client.getFake(this)->write(buf, size);
+    return ArduinoFake::getContext()._Client.getFake(this)->write(buf, size);
 }
 
 int Client::available()
 {
-    return getArduinoFakeContext()._Client.getFake(this)->available();
+    return ArduinoFake::getContext()._Client.getFake(this)->available();
 }
 
 int Client::read()
 {
-    return getArduinoFakeContext()._Client.getFake(this)->read();
+    return ArduinoFake::getContext()._Client.getFake(this)->read();
 }
 
 int Client::read(uint8_t *buf, size_t size)
 {
-    return getArduinoFakeContext()._Client.getFake(this)->read(buf, size);
+    return ArduinoFake::getContext()._Client.getFake(this)->read(buf, size);
 }
 
 int Client::peek()
 {
-    return getArduinoFakeContext()._Client.getFake(this)->peek();
+    return ArduinoFake::getContext()._Client.getFake(this)->peek();
 }
 
 void Client::flush()
 {
-    return getArduinoFakeContext()._Client.getFake(this)->flush();
+    return ArduinoFake::getContext()._Client.getFake(this)->flush();
 }
 
 void Client::stop()
 {
-    return getArduinoFakeContext()._Client.getFake(this)->stop();
+    return ArduinoFake::getContext()._Client.getFake(this)->stop();
 }
 
 uint8_t Client::connected()
 {
-    return getArduinoFakeContext()._Client.getFake(this)->connected();
+    return ArduinoFake::getContext()._Client.getFake(this)->connected();
 }
 
 Client::operator bool()
 {
-    return getArduinoFakeContext()._Client.getFake(this)->operator bool();
+    return ArduinoFake::getContext()._Client.getFake(this)->operator bool();
 }
