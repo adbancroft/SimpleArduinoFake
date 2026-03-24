@@ -14,7 +14,7 @@ void test_connect(void)
     When(OverloadedMethod(ArduinoFake(Client), println, size_t(const char *))).AlwaysReturn();
     When(OverloadedMethod(ArduinoFake(Client), connect, int(const char*, uint16_t))).Return(1);
 
-    Client * clientMock(ArduinoFakeInstance(Client));
+    Client * clientMock(getArduinoFakeContext()._Client.getFake());
 
     MyService service(clientMock);
 

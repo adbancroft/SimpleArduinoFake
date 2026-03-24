@@ -34,9 +34,6 @@
 
 /// @endcond
 
-#define ArduinoFakeInstance(mock, ...) \
-    _ArduinoFakeGetMock(mock).getFake(__VA_ARGS__)
-
 #define ArduinoFake(mock) _ArduinoFakeGet##mock()
 
 class ArduinoFakeContext
